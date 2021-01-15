@@ -4,6 +4,14 @@ namespace App\Models;
 
 use App\Contracts\Model;
 
+/**
+ * @property int     code
+ * @property string  name
+ * @property float   cost
+ * @property float   price
+ * @property int     capacity
+ * @property int     count
+ */
 class PirepFare extends Model
 {
     public $table = 'pirep_fares';
@@ -11,25 +19,24 @@ class PirepFare extends Model
 
     protected $fillable = [
         'pirep_id',
-        'fare_id',
+        'code',
+        'name',
         'count',
+        'price',
+        'cost',
+        'capacity',
     ];
 
     protected $casts = [
-        'count' => 'integer',
+        'count'    => 'integer',
+        'price'    => 'float',
+        'cost'     => 'float',
+        'capacity' => 'integer',
     ];
 
     public static $rules = [
         'count' => 'required',
     ];
-
-    /**
-     * Relationships
-     */
-    public function fare()
-    {
-        return $this->belongsTo(Fare::class, 'fare_id');
-    }
 
     public function pirep()
     {
