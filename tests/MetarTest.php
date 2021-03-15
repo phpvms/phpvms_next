@@ -152,6 +152,19 @@ class MetarTest extends TestCase
     }
 
     /**
+     * https://github.com/nabeelio/phpvms/issues/1071
+     */
+    public function testMetarWindSpeedChill()
+    {
+        $metar = 'EKYT 091020Z /////KT CAVOK 02/M03 Q1019';
+        $metar = Metar::parse($metar);
+
+        $this->assertEquals('VFR', $metar['category']);
+        $this->assertNull($metar['wind_speed']);
+        $this->assertEquals(6.21, $metar['visibility']['mi']);
+    }
+
+    /**
      * Visibility in KM not parsed
      *
      * https://github.com/nabeelio/phpvms/issues/680
