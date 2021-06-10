@@ -19,7 +19,7 @@ class CustomPaginatedResourceResponse extends PaginatedResourceResponse
 
     protected function meta($paginated)
     {
-        return Arr::except($paginated, [
+        $meta = Arr::except($paginated, [
             'data',
             'first_page_url',
             'last_page_url',
@@ -27,5 +27,7 @@ class CustomPaginatedResourceResponse extends PaginatedResourceResponse
             'next_page_url',
             'links',
         ]);
+
+        $meta['path'] = $meta['path'] + request()->query();
     }
 }
