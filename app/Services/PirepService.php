@@ -14,6 +14,7 @@ use App\Exceptions\AircraftNotAtAirport;
 use App\Exceptions\AircraftNotAvailable;
 use App\Exceptions\AircraftPermissionDenied;
 use App\Exceptions\AirportNotFound;
+use App\Exceptions\FlightNotFound;
 use App\Exceptions\PirepCancelNotAllowed;
 use App\Exceptions\PirepError;
 use App\Exceptions\UserNotAtAirport;
@@ -34,6 +35,7 @@ use App\Models\SimBrief;
 use App\Models\User;
 use App\Repositories\AircraftRepository;
 use App\Repositories\AirportRepository;
+use App\Repositories\FlightRepository;
 use App\Repositories\PirepRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -45,6 +47,7 @@ class PirepService extends Service
     private $airportRepo;
     private $airportSvc;
     private $fareSvc;
+    private $flightRepo;
     private $geoSvc;
     private $pirepRepo;
     private $simBriefSvc;
@@ -55,6 +58,7 @@ class PirepService extends Service
      * @param AirportService     $airportSvc
      * @param AircraftRepository $aircraftRepo
      * @param FareService        $fareSvc
+     * @param FlightRepository   $flightRepo
      * @param GeoService         $geoSvc
      * @param PirepRepository    $pirepRepo
      * @param SimBriefService    $simBriefSvc
@@ -65,6 +69,7 @@ class PirepService extends Service
         AirportService $airportSvc,
         AircraftRepository $aircraftRepo,
         FareService $fareSvc,
+        FlightRepository $flightRepo,
         GeoService $geoSvc,
         PirepRepository $pirepRepo,
         SimBriefService $simBriefSvc,
@@ -74,6 +79,7 @@ class PirepService extends Service
         $this->airportSvc = $airportSvc;
         $this->aircraftRepo = $aircraftRepo;
         $this->fareSvc = $fareSvc;
+        $this->flightRepo = $flightRepo;
         $this->geoSvc = $geoSvc;
         $this->pirepRepo = $pirepRepo;
         $this->simBriefSvc = $simBriefSvc;
@@ -150,6 +156,8 @@ class PirepService extends Service
         /** @var Aircraft $aircraft */
         $aircraft = $this->aircraftRepo->where('id', $pirep->aircraft_id)->where('state', AircraftState::PARKED)->first();
         if ($aircraft === null) {
+            Log::info('Aircraft not PARKED (On Ground), '.$pirep->user->name_private.' not allowed to start flight');
+
             throw new AircraftNotAvailable($pirep->aircraft);
         }
 
@@ -161,6 +169,8 @@ class PirepService extends Service
                 ->whereNotNull('flight_id')
                 ->count();
             if ($sb_aircraft > 0) {
+                Log::info('Aircraft blocked by SimBrief OFP, '.$pirep->user->name_private.' not allowed to start flight');
+
                 throw new AircraftNotAvailable($pirep->aircraft);
             }
         }
@@ -169,6 +179,21 @@ class PirepService extends Service
         /* @noinspection NotOptimalIfConditionsInspection */
         if (setting('pireps.only_aircraft_at_dpt_airport') && $aircraft->airport_id !== $pirep->dpt_airport_id) {
             throw new AircraftNotAtAirport($pirep->aircraft);
+        }
+
+        // See if the flight is present
+        if (setting('pireps.allow_only_flights', false)) {
+            $flight_check = $this->flightRepo->where([
+                'airline_id'     => $pirep->airline_id,
+                'flight_number'  => $pirep->flight_number,
+                'dpt_airport_id' => $pirep->dpt_airport_id,
+                'arr_airport_id' => $pirep->arr_airport_id,
+            ])->first();
+            if ($flight_check === null) {
+                Log::info('Pirep details do not match any flights, '.$pirep->user->name_private.' not allowed to start flight');
+
+                throw new FlightNotFound($pirep);
+            }
         }
 
         // Find if there's a duplicate, if so, let's work on that

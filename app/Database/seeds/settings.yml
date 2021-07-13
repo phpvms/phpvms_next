@@ -277,6 +277,13 @@
   options: ''
   type: int
   description: 'The time in minutes to check for a duplicate PIREP'
+- key: pireps.allow_only_flights
+  name: 'Allow only Flights'
+  group: pireps
+  value: false
+  options: ''
+  type: boolean
+  description: 'Allow only flights from VA database to be reported, restrict Free Flights'
 - key: pireps.restrict_aircraft_to_rank
   name: 'Restrict Aircraft to Ranks'
   group: pireps
