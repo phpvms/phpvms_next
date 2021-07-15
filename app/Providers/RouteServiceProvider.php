@@ -103,7 +103,7 @@ class RouteServiceProvider extends ServiceProvider
     private function mapWebRoutes()
     {
         Route::group([
-            'middleware' => ['web'],
+            'middleware' => ['web', 'language'],
             'namespace'  => $this->namespace,
         ], function () {
             Route::group([

@@ -10,6 +10,7 @@ use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SetActiveTheme;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\UpdatePending;
+use App\Http\Middleware\Language;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -59,5 +60,6 @@ class Kernel extends HttpKernel
         'theme'          => SetActiveTheme::class,
         'throttle'       => ThrottleRequests::class,
         'update_pending' => UpdatePending::class,
+        'language'		 => Language::class,
     ];
 }

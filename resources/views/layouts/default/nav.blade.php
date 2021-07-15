@@ -113,7 +113,22 @@
           </div>
         </li>
       @endif
-
+        <li class="nav-item dropdown ">
+			    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+				     data-toggle="dropdown" data-boundary="viewport" aria-haspopup="true" aria-expanded="false">
+				    <img src="{{ public_asset('/assets/img/flags/'. strtoupper(app()->getLocale()) .'.png') }}">
+			    </a>
+			    <div class="dropdown-menu dropdown-menu-right">
+				    @foreach (array_diff(scandir(resource_path('lang')), array('..', '.','vendor')) as $locale)
+					    @if ( $locale !== app()->getLocale() )
+						    <a class="dropdown-item" href="{{ url()->current() . '/?lang=' . $locale }}" title="">
+							    <img src="{{ public_asset('/assets/img/flags/'. strtoupper($locale) .'.png') }}">
+							    {{ locale_get_display_language($locale, $locale) }}
+						    </a>
+					    @endif
+				    @endforeach
+			    </div>
+        </li>
     </ul>
   </div>
 </div>

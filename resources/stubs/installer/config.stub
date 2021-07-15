@@ -19,6 +19,11 @@ return [
         // debugging templates and other internals
         'debug'         => false,
         'debug_toolbar' => false,
+        
+        // set default locale and default fallback locale 
+		// to get strings when no translation exists
+		'locale'          => 'en',
+		'fallback_locale' => 'en',
     ],
 
     // Overrides config/phpvms.php

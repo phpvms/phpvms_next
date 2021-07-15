@@ -17,8 +17,10 @@ return [
     'version'       => '7.0.0',
     'debug_toolbar' => env('DEBUG_TOOLBAR', false),
 
-    'locale'          => env('APP_LOCALE', 'en'),
-    'fallback_locale' => 'en',
+    // set normal locale and default fallback locale 
+	//to get strings from when no transation exists
+	'locale'          => 'en',
+	'fallback_locale' => 'en',
 
     //
     // Anything below here won't need changing and could break things
