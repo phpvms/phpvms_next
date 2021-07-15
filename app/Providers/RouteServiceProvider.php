@@ -126,10 +126,8 @@ class RouteServiceProvider extends ServiceProvider
 
                 Route::get('pireps/fares', 'PirepController@fares');
                 Route::post('pireps/{id}/submit', 'PirepController@submit')->name('pireps.submit');
-
-                Route::resource('pireps', 'PirepController', [
-                    'except' => ['show'],
-                ]);
+                Route::get('pireps/{id}', 'PirepController@show')->name('pireps.show');
+                Route::get('r/{id}', 'PirepController@show')->name('pirep.show.public');
 
                 Route::get('profile/acars', 'ProfileController@acars')->name('profile.acars');
                 Route::get('profile/regen_apikey', 'ProfileController@regen_apikey')->name('profile.regen_apikey');
@@ -153,8 +151,6 @@ class RouteServiceProvider extends ServiceProvider
                 'as'        => 'frontend.',
             ], function () {
                 Route::get('/', 'HomeController@index')->name('home');
-                Route::get('r/{id}', 'PirepController@show')->name('pirep.show.public');
-                Route::get('pireps/{id}', 'PirepController@show')->name('pireps.show');
 
                 Route::get('users/{id}', 'ProfileController@show')->name('users.show.public');
                 Route::get('pilots/{id}', 'ProfileController@show')->name('pilots.show.public');
