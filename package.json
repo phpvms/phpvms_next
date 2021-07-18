@@ -17,7 +17,7 @@
     "bootstrap": "~4.3",
     "bootstrap-sass": "^3.4.1",
     "bootstrap3": "npm:bootstrap@~3.4",
-    "ckeditor4": "4.14.0",
+    "ckeditor4": "4.16.1",
     "cookieconsent": "^3.1.0",
     "cross-env": "^5.1.6",
     "eonasdan-bootstrap-datetimepicker": "^4.17.47",
