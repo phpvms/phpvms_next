@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Contracts\Controller;
+use App\Events\ProfileUpdated;
 use App\Models\User;
 use App\Models\UserField;
 use App\Models\UserFieldValue;
@@ -225,6 +226,9 @@ class ProfileController extends Controller
                 'user_id'       => $id,
             ], ['value' => $request->get($field_name)]);
         }
+
+        // Dispatch event including whether an avatar has been updated
+        ProfileUpdated::dispatch($user, $request->hasFile('avatar'));
 
         Flash::success('Profile updated successfully!');
 

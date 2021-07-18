@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Events\Expenses;
 use App\Events\PirepFiled;
+use App\Events\ProfileUpdated;
 use App\Events\UserStatsChanged;
 use App\Listeners\AwardHandler;
 use App\Listeners\BidEventHandler;
@@ -39,7 +40,7 @@ class EventServiceProvider extends ServiceProvider
 
         UpdateAvailable::class => [],
         UpdateSucceeded::class => [],
-
+        ProfileUpdated::class  => [],        
         // Log messages out to the console if running there
         'Illuminate\Log\Events\MessageLogged' => [
             'App\Listeners\MessageLoggedListener',
